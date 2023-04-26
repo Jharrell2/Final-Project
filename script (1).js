@@ -1,0 +1,60 @@
+      const todos = []; // create an empty array to store the todos
+
+      // function to render the todos on the web page
+      function renderTodos() {
+        const todoList = document.getElementById("todo-list");// get the todo list ul element
+        todoList.innerHTML = "";  // clear the existing todos
+
+        for (let i = 0; i < todos.length; i++) {
+          const todo = todos[i];
+          const li = document.createElement("li");
+
+		  // create a checkbox element for each todo
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = todo.complete;// set the checkbox to checked if the todo is complete
+          checkbox.addEventListener("change", function () {
+		    // add a change event listener to the checkbox
+            todo.complete = !todo.complete; // toggle the todo's complete status
+            renderTodos(); // re-render the todos
+          });
+          li.appendChild(checkbox);// add the checkbox to the li element
+
+   		  // create a text node for the todo text
+          const text = document.createTextNode(todo.text);
+
+    	  // add a strikethrough to the text if the todo is complete
+          if (todo.complete) {
+            const strike = document.createElement("s");
+            strike.appendChild(text);
+            li.appendChild(strike);
+          } else {
+            li.appendChild(text);
+          }
+
+    	  // create a delete button for the todo
+          const deleteButton = document.createElement("button");
+          deleteButton.textContent = "x";
+          deleteButton.addEventListener("click", function () {
+      		// add a click event listener to the delete button
+            todos.splice(i, 1);// remove the todo from the todos array
+            renderTodos();
+          });
+          li.appendChild(deleteButton);// add the delete button to the li element
+
+          todoList.appendChild(li);// add the li element to the todo list ul element
+        }
+      }
+
+      const form = document.getElementById("todo-form");// get the todo form element
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const input = document.getElementById("todo-input");
+        const text = input.value;
+        const todo = { text: text, complete: false };
+        todos.push(todo);
+        input.value = "";
+        renderTodos();
+      });
+
+	renderTodos(); // render the initial todos on page load
